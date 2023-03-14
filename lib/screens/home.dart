@@ -21,13 +21,16 @@ class _HomeState extends State<Home> {
         appBar: _buildAppBar(),
         body: Column(
           children: [
+            Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                color: bgcolor,
+                child: searchBox()),
             Expanded(
                 child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children: [
-                        searchBox(),
                         Expanded(
                             child: ListView(
                           children: [
@@ -50,57 +53,54 @@ class _HomeState extends State<Home> {
                         ))
                       ],
                     ))),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    margin:
-                        const EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0.0, 0.0),
-                              blurRadius: 3.0,
-                              spreadRadius: 0),
-                        ],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: TextField(
-                      controller: _todoController,
-                      decoration: const InputDecoration(
-                        hintText: 'Добавить задачу',
-                        border: InputBorder.none,
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  margin:
+                      const EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0.0, 0.0),
+                            blurRadius: 3.0,
+                            spreadRadius: 0),
+                      ],
+                      borderRadius: BorderRadius.circular(10)),
+                  child: TextField(
+                    controller: _todoController,
+                    decoration: const InputDecoration(
+                      hintText: 'Добавить задачу',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 20, right: 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _todoAdd(_todoController.text);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: blue,
+                        minimumSize: const Size(50, 50),
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
+                    child: const Text(
+                      '+',
+                      style: TextStyle(
+                        fontSize: 38,
                       ),
                     ),
-                  )),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20, right: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _todoAdd(_todoController.text);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: blue,
-                          minimumSize: const Size(60, 60),
-                          elevation: 10,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      child: const Text(
-                        '+',
-                        style: TextStyle(
-                          fontSize: 40,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
+                  ),
+                )
+              ],
+            ),
           ],
         ));
   }
@@ -129,9 +129,10 @@ class _HomeState extends State<Home> {
   Widget searchBox() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: const TextField(
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),

@@ -18,13 +18,13 @@ class ToDoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         onTap: () {
           onToDoChanged(todo);
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         tileColor: Colors.white,
         leading: Icon(
             todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
