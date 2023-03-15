@@ -4,15 +4,22 @@ import '../constants/colors.dart';
 import '../widgets/todo_item.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  final todoList = ToDo.todoList();
+  final _allTodoList = ToDo.todoList();
+  List<ToDo> _foundTodoList = [];
   final _todoController = TextEditingController();
+
+  @override
+  void initState() {
+    _foundTodoList = _allTodoList;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +50,7 @@ class _HomeState extends State<Home> {
                                     fontSize: 30, fontWeight: FontWeight.w500),
                               ),
                             ),
-                            for (ToDo todo in todoList)
+                            for (ToDo todo in _foundTodoList.reversed)
                               ToDoItem(
                                 todo: todo,
                                 onToDoChanged: _todoChange,
@@ -113,17 +120,33 @@ class _HomeState extends State<Home> {
 
   void _todoDelete(int id) {
     setState(() {
-      todoList.removeWhere((element) => element.id == id);
+      _allTodoList.removeWhere((element) => element.id == id);
+      _foundTodoList.removeWhere((element) => element.id == id);
     });
   }
 
   void _todoAdd(String todo) {
     setState(() {
-      todoList.add(
+      _allTodoList.add(
           ToDo(id: DateTime.now().millisecondsSinceEpoch.toInt(), text: todo));
     });
     _todoController.clear();
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void _runFilter(String searchString) {
+    List<ToDo> results = [];
+    if (searchString.isEmpty) {
+      results = _allTodoList;
+    } else {
+      results = _allTodoList
+          .where((element) =>
+              element.text!.toLowerCase().contains(searchString.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      _foundTodoList = results;
+    });
   }
 
   Widget searchBox() {
@@ -133,8 +156,9 @@ class _HomeState extends State<Home> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        onChanged: (value) => _runFilter(value),
+        decoration: const InputDecoration(
             contentPadding: EdgeInsets.all(0),
             prefixIcon: Icon(
               Icons.search,
