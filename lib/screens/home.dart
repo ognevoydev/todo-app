@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../model/todo.dart';
+import 'package:todo_app/widgets/search_bar.dart';
+
 import '../constants/colors.dart';
+import '../model/todo.dart';
 import '../widgets/todo_item.dart';
 
 class Home extends StatefulWidget {
@@ -32,7 +34,7 @@ class _HomeState extends State<Home> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 color: bgcolor,
-                child: searchBox()),
+                child: SearchBar(runFilter: _runFilter)),
             Expanded(
                 child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -147,30 +149,6 @@ class _HomeState extends State<Home> {
     setState(() {
       _foundTodoList = results;
     });
-  }
-
-  Widget searchBox() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: TextField(
-        onChanged: (value) => _runFilter(value),
-        decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(0),
-            prefixIcon: Icon(
-              Icons.search,
-              color: black,
-              size: 20,
-            ),
-            prefixIconConstraints: BoxConstraints(maxHeight: 20, minWidth: 25),
-            border: InputBorder.none,
-            hintText: 'Поиск',
-            hintStyle: TextStyle(color: grey)),
-      ),
-    );
   }
 
   AppBar _buildAppBar() {
