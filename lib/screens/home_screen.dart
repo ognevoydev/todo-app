@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/widgets/search_bar.dart';
 
 import '../constants/colors.dart';
 import '../model/todo.dart';
+import '../widgets/search_bar.dart';
 import '../widgets/todo_item.dart';
+import '../widgets/drawer_header.dart';
+import '../widgets/drawer_list.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   final _allTodoList = ToDo.todoList();
   List<ToDo> _foundTodoList = [];
   final _todoController = TextEditingController();
@@ -28,6 +30,19 @@ class _HomeState extends State<Home> {
     return Scaffold(
         backgroundColor: bgcolor,
         appBar: _buildAppBar(),
+        drawer: Drawer(
+          backgroundColor: Colors.white,
+          child: SingleChildScrollView(
+            child: Container(
+              child: const Column(
+                children: [
+                  MDrawerHeader(),
+                  DrawerList(),
+                ],
+              ),
+            ),
+          ),
+        ),
         body: Column(
           children: [
             Container(
@@ -156,14 +171,22 @@ class _HomeState extends State<Home> {
       backgroundColor: bgcolor,
       elevation: 0,
       centerTitle: true,
+      leading: Builder(
+        builder: (context) {
+          return IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: black,
+              size: 30,
+            ),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          );
+        },
+      ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(
-            Icons.menu,
-            color: black,
-            size: 30,
-          ),
+          const Spacer(),
           Container(
             height: 40,
             width: 40,
