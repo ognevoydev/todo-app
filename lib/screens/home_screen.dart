@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../service/database.dart';
 import '../constants/colors.dart';
 import '../model/todo.dart';
 import '../widgets/search_bar.dart';
@@ -15,13 +16,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _allTodoList = ToDo.todoList();
-  List<ToDo> _foundTodoList = [];
+  List<ToDo> _allToDoList = [];
+  List<ToDo> _foundToDoList = [];
   final _todoController = TextEditingController();
 
   @override
   void initState() {
-    _foundTodoList = _allTodoList;
+    getToDoList();
     super.initState();
   }
 
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontSize: 30, fontWeight: FontWeight.w500),
                               ),
                             ),
-                            for (ToDo todo in _foundTodoList.reversed)
+                            for (ToDo todo in _foundToDoList.reversed)
                               ToDoItem(
                                 todo: todo,
                                 onToDoChanged: _todoChange,
@@ -129,23 +130,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  void _todoChange(ToDo todo) {
+  void _todoChange(ToDo todo) async {
+    await DBProvider.db.toggleIsDone(todo);
     setState(() {
       todo.isDone = !todo.isDone;
     });
   }
 
-  void _todoDelete(int id) {
+  void _todoDelete(int id) async {
+    await DBProvider.db.deleteToDoById(id);
     setState(() {
-      _allTodoList.removeWhere((element) => element.id == id);
-      _foundTodoList.removeWhere((element) => element.id == id);
+      _allToDoList.removeWhere((element) => element.id == id);
+      _foundToDoList.removeWhere((element) => element.id == id);
     });
   }
 
-  void _todoAdd(String todo) {
+  void _todoAdd(String text) async {
+    int id = await DBProvider.db.addToDo(ToDo(text: text));
     setState(() {
-      _allTodoList.add(
-          ToDo(id: DateTime.now().millisecondsSinceEpoch.toInt(), text: todo));
+      _allToDoList.add(ToDo.withId(id: id, text: text));
     });
     _todoController.clear();
     FocusManager.instance.primaryFocus?.unfocus();
@@ -154,15 +157,25 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runFilter(String searchString) {
     List<ToDo> results = [];
     if (searchString.isEmpty) {
-      results = _allTodoList;
+      results = _allToDoList;
     } else {
-      results = _allTodoList
+      results = _allToDoList
           .where((element) =>
               element.text!.toLowerCase().contains(searchString.toLowerCase()))
           .toList();
     }
     setState(() {
-      _foundTodoList = results;
+      _foundToDoList = results;
+    });
+  }
+
+  void getToDoList() async {
+    Future<List<ToDo>> list = DBProvider.db.getAllToDos();
+    list.then((value) {
+      setState(() {
+        _allToDoList = value;
+        _foundToDoList = _allToDoList;
+      });
     });
   }
 

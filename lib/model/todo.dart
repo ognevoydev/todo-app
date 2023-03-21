@@ -3,18 +3,19 @@ class ToDo {
   String? text;
   bool isDone;
 
-  ToDo({required this.id, required this.text, this.isDone = false});
+  ToDo({required this.text, this.isDone = false});
 
-  static List<ToDo> todoList() {
-    return [
-      ToDo(id: 1, text: "ToDo 1", isDone: true),
-      ToDo(id: 2, text: "ToDo 2", isDone: true),
-      ToDo(id: 3, text: "ToDo 3"),
-      ToDo(id: 4, text: "ToDo 4"),
-      ToDo(id: 5, text: "ToDo 5"),
-      ToDo(id: 6, text: "ToDo 6", isDone: true),
-      ToDo(id: 7, text: "ToDo 7"),
-      ToDo(id: 8, text: "ToDo 8", isDone: true),
-    ];
+  ToDo.withId({required this.id, required this.text, this.isDone = false});
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {'text': text, 'isDone': isDone == true ? 1 : 0};
+    if (id != null) {
+      map['id'] = id;
+    }
+    return map;
+  }
+
+  static ToDo fromMap(Map<String, dynamic> map) {
+    return ToDo.withId(id: map['id'], text: map['text'], isDone: map['isDone'] == 1 ? true: false);
   }
 }
